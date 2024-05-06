@@ -22,7 +22,7 @@ import viteCompression from 'vite-plugin-compression'
 import path from 'path'
 
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/dolphin/ui/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/dev/dolphin/ui/' : '/',
   plugins: [
     vue(),
     vueJsx(),
@@ -43,7 +43,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/dolphin': {
+      '/dev/dolphin': {
         target: loadEnv('development', './').VITE_APP_DEV_WEB_URL,
         changeOrigin: true
       }

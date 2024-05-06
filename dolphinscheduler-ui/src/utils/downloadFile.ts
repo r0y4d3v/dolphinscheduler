@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-const apiPrefix = '/dolphin'
+const apiPrefix = '/dev/dolphin'
 const reSlashPrefix = /^\/+/
 
 const resolveURL = (url: string) => {

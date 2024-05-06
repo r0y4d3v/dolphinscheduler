@@ -43,8 +43,8 @@ const handleError = (res: AxiosResponse<any, any>) => {
 const baseRequestConfig: AxiosRequestConfig = {
   baseURL:
     import.meta.env.MODE === 'development'
-      ? '/dolphin'
-      : import.meta.env.VITE_APP_PROD_WEB_URL + '/dolphin',
+      ? '/dev/dolphin'
+      : import.meta.env.VITE_APP_PROD_WEB_URL + '/dev/dolphin',
   timeout: uiSettingStore.getApiTimer ? uiSettingStore.getApiTimer : 20000,
   transformRequest: (params) => {
     if (_.isPlainObject(params)) {
