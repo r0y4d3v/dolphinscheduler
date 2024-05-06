@@ -203,6 +203,16 @@ security:
     oauth2:
       enable: false
       provider:
+        oidc:
+          authorizationUri: ""
+          redirectUri: ""
+          clientId: ""
+          clientSecret: ""
+          tokenUri: ""
+          userInfoUri: ""
+          callbackUrl: ""
+          iconUri: ""
+          provider: ""
 casdoor:
   # Your Casdoor server url
   endpoint: ""
