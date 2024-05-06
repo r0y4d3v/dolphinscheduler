@@ -208,7 +208,7 @@ public class LoginController extends BaseController {
     @SneakyThrows
     @Operation(summary = "redirectToOauth2", description = "REDIRECT_TO_OAUTH2_LOGIN")
     @GetMapping("redirect/login/oauth2")
-    public void loginByAuth2(@RequestParam String code, @RequestParam String provider,
+    public void loginByAuth2(@RequestParam String code, @RequestParam String session_state,@RequestParam String provider,
                              HttpServletRequest request, HttpServletResponse response) {
         OAuth2Configuration.OAuth2ClientProperties oAuth2ClientProperties =
                 oAuth2Configuration.getProvider().get(provider);
@@ -217,26 +217,35 @@ public class LoginController extends BaseController {
             tokenRequestHeader.put("Accept", "application/json");
             Map<String, Object> requestBody = new HashMap<>(16);
             requestBody.put("client_secret", oAuth2ClientProperties.getClientSecret());
-            HashMap<String, Object> requestParamsMap = new HashMap<>();
-            requestParamsMap.put("client_id", oAuth2ClientProperties.getClientId());
-            requestParamsMap.put("code", code);
-            requestParamsMap.put("grant_type", "authorization_code");
-            requestParamsMap.put("redirect_uri",
+            requestBody.put("client_id", oAuth2ClientProperties.getClientId());
+            requestBody.put("code", code);
+            requestBody.put("session_state", session_state);
+            requestBody.put("grant_type", "authorization_code");
+            requestBody.put("redirect_uri",
                     String.format("%s?provider=%s", oAuth2ClientProperties.getRedirectUri(), provider));
-            String tokenJsonStr = OkHttpUtils.post(oAuth2ClientProperties.getTokenUri(), tokenRequestHeader,
+
+            HashMap<String, Object> requestParamsMap = new HashMap<>();
+//            requestParamsMap.put("client_id", oAuth2ClientProperties.getClientId());
+//            requestParamsMap.put("code", code);
+//            requestParamsMap.put("grant_type", "authorization_code");
+
+            String tokenJsonStr = OkHttpUtils.postForm(oAuth2ClientProperties.getTokenUri(), tokenRequestHeader,
                     requestParamsMap, requestBody);
             String accessToken = JSONUtils.getNodeString(tokenJsonStr, "access_token");
             Map<String, String> userInfoRequestHeaders = new HashMap<>();
             userInfoRequestHeaders.put("Accept", "application/json");
             Map<String, Object> userInfoQueryMap = new HashMap<>();
-            userInfoQueryMap.put("access_token", accessToken);
+//            userInfoQueryMap.put("access_token", accessToken);
             userInfoRequestHeaders.put("Authorization", "Bearer " + accessToken);
             String userInfoJsonStr =
                     OkHttpUtils.get(oAuth2ClientProperties.getUserInfoUri(), userInfoRequestHeaders, userInfoQueryMap);
-            String username = JSONUtils.getNodeString(userInfoJsonStr, "login");
+
+            String username = JSONUtils.getNodeString(userInfoJsonStr, "preferred_username");
+            String email = JSONUtils.getNodeString(userInfoJsonStr, "email");
+
             User user = usersService.getUserByUserName(username);
             if (user == null) {
-                user = usersService.createUser(UserType.GENERAL_USER, username, null);
+                user = usersService.createUser(UserType.GENERAL_USER, username, email);
             }
             Session session = sessionService.createSessionIfAbsent(user);
             response.setStatus(HttpStatus.SC_MOVED_TEMPORARILY);

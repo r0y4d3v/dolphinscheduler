@@ -17,6 +17,7 @@
 
 package org.apache.dolphinscheduler.common.utils;
 
+import okhttp3.*;
 import org.apache.http.HttpStatus;
 
 import java.io.IOException;
@@ -26,12 +27,6 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 
 import lombok.NonNull;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class OkHttpUtils {
 
@@ -64,6 +59,30 @@ public class OkHttpUtils {
             requestBuilder = requestBuilder.post(RequestBody.create(MediaType.parse("application/json"),
                     JSONUtils.toJsonString(requestBodyMap)));
         }
+        try (Response response = CLIENT.newCall(requestBuilder.build()).execute()) {
+            return getResponseBody(response);
+        }
+    }
+
+    public static @NonNull String postForm(@NonNull String url,
+                                           @Nullable Map<String, String> httpHeaders,
+                                           @Nullable Map<String, Object> requestParamsMap,
+                                           @Nullable Map<String, Object> requestBodyMap) throws IOException {
+        String finalUrl = addUrlParams(requestParamsMap, url);
+        Request.Builder requestBuilder = new Request.Builder().url(finalUrl);
+        addHeader(httpHeaders, requestBuilder);
+
+        FormBody.Builder formBuilder = new FormBody.Builder();
+
+        if (requestBodyMap != null) {
+            for (String key : requestBodyMap.keySet()) {
+                formBuilder.add(key, requestBodyMap.get(key).toString());
+            }
+
+            FormBody formBody = formBuilder.build();
+            requestBuilder = requestBuilder.post(formBody);
+        }
+
         try (Response response = CLIENT.newCall(requestBuilder.build()).execute()) {
             return getResponseBody(response);
         }

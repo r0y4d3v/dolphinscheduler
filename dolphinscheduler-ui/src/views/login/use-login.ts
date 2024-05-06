@@ -77,7 +77,7 @@ export function useLogin(state: any) {
   const gotoOAuth2Page = async (oauth2Provider: OAuth2Provider) => {
     await clearCookie()
     window.location.href = `${oauth2Provider.authorizationUri}?client_id=${oauth2Provider.clientId}` +
-      `&response_type=code&redirect_uri=${oauth2Provider.redirectUri}?provider=${oauth2Provider.provider}`
+      `&response_type=code&scope=openid%20profile%20email&redirect_uri=${oauth2Provider.redirectUri}?provider=${oauth2Provider.provider}`
   }
 
   const handleRedirect = async () => {
