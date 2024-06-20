@@ -452,7 +452,13 @@ public class SqlTask extends AbstractTask {
         setSqlParamsMap(sql, rgex, sqlParamsMap, paramsMap, taskExecutionContext.getTaskInstanceId());
         // Replace the original value in sql ！{...} ，Does not participate in precompilation
         String rgexo = "['\"]*\\!\\{(.*?)\\}['\"]*";
-        sql = replaceOriginalValue(sql, rgexo, paramsMap);
+
+        // Replace the original value in sql @{...}
+        String rgQuote = "['\"]*\\@\\{(.*?)\\}['\"]*";
+
+        sql = replaceOriginalValue(sql, rgexo, paramsMap,false);
+        sql = replaceOriginalValue(sql, rgQuote, paramsMap,true);
+
         // replace the ${} of the SQL statement with the Placeholder
         String formatSql = sql.replaceAll(rgex, "?");
         // Convert the list parameter
@@ -463,7 +469,7 @@ public class SqlTask extends AbstractTask {
         return new SqlBinds(sqlBuilder.toString(), sqlParamsMap);
     }
 
-    private String replaceOriginalValue(String content, String rgex, Map<String, Property> sqlParamsMap) {
+    private String replaceOriginalValue(String content, String rgex, Map<String, Property> sqlParamsMap,boolean withQuote) {
         Pattern pattern = Pattern.compile(rgex);
         while (true) {
             Matcher m = pattern.matcher(content);
@@ -472,11 +478,14 @@ public class SqlTask extends AbstractTask {
             }
             String paramName = m.group(1);
             String paramValue = sqlParamsMap.get(paramName).getValue();
-            content = m.replaceFirst(paramValue);
+            if(withQuote){
+                content = m.replaceFirst("\"" + paramValue + "\"");
+            }else{
+                content = m.replaceFirst(paramValue);
+            }
         }
         return content;
     }
-
     /**
      * create function list
      *
