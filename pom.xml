@@ -36,7 +36,7 @@
         <module>dolphinscheduler-alert</module>
 <!--        <module>dolphinscheduler-spi</module>-->
 <!--        <module>dolphinscheduler-registry</module>-->
-        <module>dolphinscheduler-task-plugin</module>
+<!--        <module>dolphinscheduler-task-plugin</module>-->
         <module>dolphinscheduler-common</module>
 <!--        <module>dolphinscheduler-api</module>-->
 <!--        <module>dolphinscheduler-aop</module>-->
@@ -49,7 +49,7 @@
 <!--        <module>dolphinscheduler-datasource-plugin</module>-->
 <!--        <module>dolphinscheduler-meter</module>-->
 <!--        <module>dolphinscheduler-master</module>-->
-<!--        <module>dolphinscheduler-worker</module>-->
+        <module>dolphinscheduler-worker</module>
 <!--        <module>dolphinscheduler-tools</module>-->
 <!--        <module>dolphinscheduler-ui</module>-->
 <!--        <module>dolphinscheduler-scheduler-plugin</module>-->

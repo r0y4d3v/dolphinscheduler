@@ -84,7 +84,7 @@ public class S3RemoteLogHandler implements RemoteLogHandler, Closeable {
                     .standard()
                     .withPathStyleAccessEnabled(true)
                     .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
-                            endPoint, Regions.fromName(region).getName()))
+                            endPoint, region))
                     .withCredentials(
                             new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKeyId, accessKeySecret)))
                     .build();
@@ -93,7 +93,7 @@ public class S3RemoteLogHandler implements RemoteLogHandler, Closeable {
                     .standard()
                     .withCredentials(
                             new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKeyId, accessKeySecret)))
-                    .withRegion(Regions.fromName(region))
+                    .withRegion(region)
                     .build();
         }
     }
