@@ -82,7 +82,7 @@ public class S3RemoteLogHandler implements RemoteLogHandler, Closeable {
         if (StringUtils.isNotEmpty(endPoint)) {
             return AmazonS3ClientBuilder
                     .standard()
-                    .withPathStyleAccessEnabled(true)
+                    .withPathStyleAccessEnabled(false)
                     .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
                             endPoint, region))
                     .withCredentials(
