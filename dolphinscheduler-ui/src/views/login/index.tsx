@@ -20,6 +20,7 @@ import {
   getCurrentInstance,
   onMounted,
   toRefs,
+  ref,
   withKeys
 } from 'vue'
 import styles from './index.module.scss'
@@ -52,6 +53,8 @@ const login = defineComponent({
     const { handleLogin, handleGetOAuth2Provider, oauth2Providers, gotoOAuth2Page, handleRedirect } = useLogin(state)
     const localesStore = useLocalesStore()
     const themeStore = useThemeStore()
+
+    const isLoginVisible = false;
 
     if (themeStore.getTheme) {
       themeStore.setDarkTheme()
@@ -113,7 +116,7 @@ const login = defineComponent({
           </div>
           <div
             class={styles['form-model']}
-            v-show={this.loginForm.ssoLoginUrl.length === 0}
+            v-show={this.loginForm.ssoLoginUrl.length === 0 && this.isLoginVisible}
           >
             <NForm rules={this.rules} ref='loginFormRef'>
               <NFormItem
@@ -177,9 +180,9 @@ const login = defineComponent({
               </NButton>
             </a>
           </div>
-            {this.oauth2Providers.length > 0 && <NDivider >
-              {this.t('login.loginWithOAuth2')}
-            </NDivider>}
+            {/*{this.oauth2Providers.length > 0 && <NDivider >*/}
+            {/*  {this.t('login.loginWithOAuth2')}*/}
+            {/*</NDivider>}*/}
 
             <NSpace class={styles['oauth2-provider']} justify="center">
               {this.oauth2Providers?.map((e: OAuth2Provider) => {
